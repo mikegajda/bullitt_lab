@@ -79,6 +79,9 @@ class Options:
     def __init__(self, options):
         self.options = options
 
+    def __getitem__(self, key):
+        return self.options[key]
+
     def print_options(self):
         print "The following options have been set:"
         for option in self.options:

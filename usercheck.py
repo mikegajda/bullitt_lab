@@ -1,6 +1,9 @@
 class UserCheck:
-    def __init__(self):
-        self.approved = False
+    def __init__(self, approval_required):
+        if approval_required == True:
+            self.approved = False
+        else:
+            self.approved = True
 
     def approval(self, what_to_check=""):
         assert isinstance(what_to_check, str)
