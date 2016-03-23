@@ -16,7 +16,7 @@ def change_file_names(options):
     assert len(files) > 0
 
     log = Log(script_name="change_file_names", write_changes=write_changes_file_option, verbose=verbose_option)
-    log.send("running in {}".format(os.getcwd()))
+    log.send("running in {0}".format(os.getcwd()))
 
     user_check = UserCheck(user_approval_required)
 
@@ -34,8 +34,8 @@ def change_file_names(options):
         if user_check.approval("Create: " + " " + new_name + extension) == True:
             #os.rename(old_name + extension, new_name + extension)
             shutil.copy(old_name + extension, new_name + extension)
-            log.send("Created: {}{}".format(new_name, extension))
-            log.change("{},{}".format(old_name + extension, new_name + extension))
+            log.send("Created: {0}{1}".format(new_name, extension))
+            log.change("{0},{1}".format(old_name + extension, new_name + extension))
         else:
             log.send("approval not granted, exiting")
             break

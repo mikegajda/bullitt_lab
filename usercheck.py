@@ -1,5 +1,5 @@
 class UserCheck:
-    def __init__(self, approval_required):
+    def __init__(self, approval_required=True):
         if approval_required == True:
             self.approved = False
         else:

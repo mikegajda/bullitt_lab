@@ -24,7 +24,7 @@ class Log:
 
 		self.log = ""
 
-		self.send("Starting {} at {}".format(self.script_name, self.start_time))
+		self.send("Starting {0} at {1}".format(self.script_name, self.start_time))
 
 	def send(self, log, new_line_delimiter="\n"):
 		"""The main function to interact with a Log object. This sends the message to the log.
@@ -51,7 +51,7 @@ class Log:
 		changes_file = self.script_name + "_" + self.start_time + self.changes_extension
 
 		f = open(changes_file, "w+")
-		f.write("{} started on: {}, ended on: {}\n".format(self.script_name, self.start_time, self.end_time))
+		f.write("{0} started on: {1}, ended on: {2}\n".format(self.script_name, self.start_time, self.end_time))
 		f.write(self.changes)
 		f.close()
 

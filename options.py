@@ -1,6 +1,6 @@
 import getopt, sys, os
 class StringOption:
-    def __init__(self, full_name, abbr, takes_input, default_value=None):
+    def __init__(self, full_name, abbr, takes_input, default_value=None, explanation="Default Explanation"):
         assert isinstance(full_name, str)
         assert isinstance(abbr, str)
         assert isinstance(takes_input, bool)
@@ -19,6 +19,10 @@ class StringOption:
             self.short_opt = abbr
 
         self.long_opt = full_name + "="
+
+        self.expected_input = "'your_string_here'"
+
+        self.explanation = explanation
     
     def __str__(self):
         return str((self.full_name, self.abbr, self.takes_input, self.value))
@@ -35,6 +39,8 @@ class ListOption(StringOption):
         StringOption.__init__(self, *args, **kwargs)
         self.value = self.value.split(",")
 
+        self.expected_input ="\"[1,2,3,4]\""
+
     def set_value(self, new_value):
         self.value = new_value.split(",")
 
@@ -44,6 +50,8 @@ class IntOption(StringOption):
         StringOption.__init__(self, *args, **kwargs)
         self.value = int(self.value)
 
+        self.expected_input = "\"1\""
+
     def set_value(self, new_value):
         self.value = int(new_value)
 
@@ -52,6 +60,8 @@ class FloatOption(StringOption):
     def __init__(self, *args, **kwargs):
         StringOption.__init__(self, *args, **kwargs)
         self.value = float(self.value)
+
+        self.expected_input = "\"1.0\""
 
     def set_value(self, new_value):
         self.value = int(new_value)
@@ -71,6 +81,8 @@ class BoolOption(StringOption):
         else:
             raise ValueError("Unsupported boolean value passed in")
 
+        self.expected_input = "\"True\""
+
     def set_value(self, new_value):
         self.value = not self.value
 
@@ -87,6 +99,21 @@ class Options:
         for option in self.options:
             print self.options[option].full_name, "=", self.options[option].value
         print "\n"
+    def help(self, script_name):
+        print "\nHere are the options available for this program:"
+
+        example = script_name + " "
+        for option in self.options:
+            print option, "can be set with", self.options[option].retrieval_long, "or", self.options[option].retrieval_short
+            print "default:", "\"" + str(self.options[option].value) + "\""
+            print ""
+
+            example += self.options[option].retrieval_short + " \"" + str(self.options[option].value) + "\" "
+
+        print "example run(with defaults set):"
+        print example
+
+
     def get_user_options(self):
         options_long_list = [self.options[option].long_opt for option in self.options]
         options_short_list = "".join([self.options[option].short_opt for option in self.options])
@@ -95,9 +122,18 @@ class Options:
         try:
             retrieved_opts, args = getopt.getopt(sys.argv[1:], options_short_list, options_long_list)
         except getopt.GetoptError as error:
-            print error
+            print "I'm here"
             sys.exit()
-            
+
+        if len(retrieved_opts) == 0:
+            if "change_file_names" in sys.argv[0]:
+                self.help("renamemotl")
+            elif "scale_csv" in sys.argv[0]:
+                self.help("scalecsv")
+            else:
+                self.help(sys.argv[0])
+            sys.exit()
+        
         for option in self.options:
             for retrieved_opt in retrieved_opts:
                 retrieved_opt_name, retrieved_value = retrieved_opt
