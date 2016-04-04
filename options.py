@@ -99,8 +99,15 @@ class Options:
         for option in self.options:
             print self.options[option].full_name, "=", self.options[option].value
         print "\n"
+        
     def help(self, script_name):
         print "\nHere are the options available for this program:"
+
+        if "change_file_names" in script_name:
+            script_name = "renamemotl"
+        elif "scale_csv" in script_name:
+            script_name = "scalecsv"
+
 
         example = script_name + " "
         for option in self.options:
@@ -110,9 +117,9 @@ class Options:
 
             example += self.options[option].retrieval_short + " \"" + str(self.options[option].value) + "\" "
 
-        print "example run(with defaults set):"
+        print "example run (with defaults set):"
         print example
-
+        sys.exit()
 
     def get_user_options(self):
         options_long_list = [self.options[option].long_opt for option in self.options]
@@ -122,17 +129,11 @@ class Options:
         try:
             retrieved_opts, args = getopt.getopt(sys.argv[1:], options_short_list, options_long_list)
         except getopt.GetoptError as error:
-            print "I'm here"
-            sys.exit()
+            print "An error occured. Assuming you need some help:"
+            self.help(sys.argv[0])
 
         if len(retrieved_opts) == 0:
-            if "change_file_names" in sys.argv[0]:
-                self.help("renamemotl")
-            elif "scale_csv" in sys.argv[0]:
-                self.help("scalecsv")
-            else:
-                self.help(sys.argv[0])
-            sys.exit()
+            self.help(sys.argv[0])
         
         for option in self.options:
             for retrieved_opt in retrieved_opts:
